@@ -1,0 +1,48 @@
+#!/bin/bash
+
+NGINX_VERSION="<%=props['dependencies']['nginx_rpm_version']%>"
+NGINX_RELEASE="<%=props['dependencies']['nginx_rpm_release']%>"
+NGINX_STABLE="<%=props['dependencies']['nginx_rpm_stable']%>"
+OPENSSL_VERSION="<%=props['dependencies']['openssl_version']%>"
+
+echo "Using: Nginx version $NGINX_VERSION Release $NGINX_RELEASE stable: $NGINX_STABLE"
+
+# Clean
+rm -rf ~/project/target
+rm -rf ~/rpmbuild
+
+mkdir -p ~/project/target
+
+# Prepare: an openssl
+cd /tmp
+if [ ! -e "/tmp/openssl-for-rpm" ]; then
+  wget http://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz
+  tar xzf openssl-${OPENSSL_VERSION}.tar.gz
+  mv openssl-${OPENSSL_VERSION} openssl-for-rpm
+fi
+
+# Prepare: Sources from Nginx itself for a CentOS RPM
+if [ "$NGINX_STABLE" = "true" ]; then
+  rpm -i http://nginx.org/packages/centos/6/SRPMS/nginx-${NGINX_VERSION}-${NGINX_RELEASE}.el6.ngx.src.rpm
+else
+  rpm -i http://nginx.org/packages/mainline/centos/6/SRPMS/nginx-${NGINX_VERSION}-${NGINX_RELEASE}.el6.ngx.src.rpm
+fi
+
+# Prepare: Patching Nginx sources for building with SPDY support
+cd ~/rpmbuild/SPECS
+patch nginx.spec < ~/project/src/build/diff/nginx.spec.patch
+if [ $? != 0 ]; then
+  echo "Patch failed."
+  exit 1
+fi
+# Copy final SPEC to target
+cp ~/rpmbuild/SPECS/nginx.spec ~/project/target/
+
+# Build RPM
+cd ~/rpmbuild
+rpmbuild -ba SPECS/nginx.spec
+
+# Copy RPM to target
+cp RPMS/x86_64/nginx-${NGINX_VERSION}-${NGINX_RELEASE}.el6.ngx.x86_64.rpm ~/project/target/
+
+echo "Finished!"

@@ -1,0 +1,14 @@
+# IntelliJ
+.idea
+*.iml
+
+# Vagrant
+.vagrant
+
+# Output, artifacts
+target
+
+# Config
+build.yaml
+
+# Others

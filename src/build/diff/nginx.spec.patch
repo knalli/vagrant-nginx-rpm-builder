@@ -1,0 +1,8 @@
+59c59
+< ./configure \
+---
+> ./configure --with-http_spdy_module --with-openssl=/tmp/openssl-for-rpm \
+96c96
+< ./configure \
+---
+> ./configure --with-http_spdy_module --with-openssl=/tmp/openssl-for-rpm \
