@@ -1,0 +1,5 @@
+dependencies:
+  nginx_rpm_stable: true
+  nginx_rpm_version: 1.4.2
+  nginx_rpm_release: 1
+  openssl_version: 1.0.1e

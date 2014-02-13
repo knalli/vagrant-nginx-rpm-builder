@@ -69,7 +69,7 @@ With Puppet, the following custom puppet modules will be used:
 
 The mentioned `build.sh` on the VM (it's located at `home/vagrant/build.sh` (copied from
 [src/puppet/modules/nginxdevel/files/build.sh](here)) creates on the fly a rpm build scrpipt based on the individual
-settings of [build.yaml](build.yaml).
+settings of [build.yaml.default](build.yaml).
 
 ## Links
 * [nginx.org: archive of mainline packages for RHEL6](http://nginx.org/packages/mainline/rhel/6/x86_64/RPMS/)
